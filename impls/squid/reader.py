@@ -21,6 +21,7 @@ def tokenize(string):
     x = 0
     t = 0
     tknarray = []
+    prev_string = ''
 
     # keep cycling until the string is consumed
     while len(string) > 0:
@@ -36,14 +37,13 @@ def tokenize(string):
             string = string[len(tildeat.group()):]
             
         # match the semicolon starting text
-        semitext = re.match(";.*",string)
+        semitext = re.match(";.*", string)
         if semitext != None:
             tknarray.append(semitext.group())
             string = string[len(semitext.group()):]
 
-#        print("MID: " + string)
-#        print(tknarray)
-        
+#        print("MID:" + string)
+        # match the double quote string, and throw error if no closing quote
         if len(string) > 0 and string[0] == '"':
             dblquote = re.match('"(?:\\.|[^\\"])*"?', string)
             dblstring = dblquote.group()
@@ -52,7 +52,28 @@ def tokenize(string):
                 string = string[len(dblstring):]
             else:
                 print('Missing double quote...')
+                print('Segment: <start>' + dblstring + '<end>')
                 break;
+
+#        print("MID:" + string)
+            
+        # match the special characters
+        specchar = re.match("[\[\]{}()'`~^@]", string)
+#        print(string)
+#        print(specchar.group())
+        if specchar != None:
+            tknarray.append(specchar.group())
+            string = string[len(specchar.group()):]
+        
+#        print("MID:" + string)
+
+
+
+        print(string)
+        if string == prev_string:
+            assert False, "Infinite loop issue..."
+
+        prev_string = string
         
     return tknarray
 

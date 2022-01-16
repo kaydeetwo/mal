@@ -31,6 +31,6 @@ if __name__ == '__main__':
     #         response("EXIT", "Quitting")
     #         exit(0)
 
-    string = '  ,, "XXX"  ~@,,,,  ~@ " ;TE";MP'
+    string = '  ,, "XXX" [ ] "  "     ~@,,,,  ~@ " ;TE;MP" @ ^ ~ 2 ;wfwqfwq'
     ans = tokenize(string)
     print(ans)
