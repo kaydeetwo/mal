@@ -20,6 +20,8 @@ session = PromptSession()
 
 
 if __name__ == '__main__':
+    print('Squid LISP REPL')
+    print('Ctrl-D to exit')
     while 1:
         try:
             input = session.prompt('user> ') 
