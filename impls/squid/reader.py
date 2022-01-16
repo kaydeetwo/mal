@@ -25,35 +25,39 @@ class Reader:
               
 def read_str(string):
     reader = Reader(tokenize(string),0)
-    print(reader.tokens)
+    # print(reader.tokens)
     return read_form(reader)
 
 
 def read_form(reader):
+
     if reader.peek() == '(':
         reader.next()
-        reader.print("rf_lpf")
+        # reader.print("rf_lpf")
         return read_list(reader)
     else:
-        reader.print("rf_nlpf")
+        # reader.print("rf_nlpf")
         return read_atom(reader)
 
 
 def read_list(reader):
     itemlist = []
-    while reader.position < len(reader.tokens):
+    while 1:
         temp = read_form(reader)
-        reader.print("rl")
+ #       reader.print("rl")
         if temp == ')':
             break;
         else:
             itemlist.append(temp)
-    print('rl_itemlist:', itemlist)
+            if reader.position == len(reader.tokens):
+                break;
+        reader.next()
+    # print('rl_itemlist:', itemlist)
     return itemlist
 
 
 def read_atom(reader):
-    reader.print("ra")
+   # reader.print("ra")
     if reader.peek().isnumeric():
         return int(reader.peek())
     else:
@@ -66,7 +70,7 @@ def read_atom(reader):
 def tokenize(string):
     tknarray = []
     prev_string = ''
-    print(string, 'START')
+    # print(string)
     
     # keep cycling until the string is consumed
     while len(string) > 0:
