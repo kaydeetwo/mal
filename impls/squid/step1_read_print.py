@@ -1,6 +1,6 @@
 from prompt_toolkit import PromptSession
 import sys
-from reader import tokenize
+from reader import read_str
 
 def READ(param):
     return param
@@ -31,6 +31,4 @@ if __name__ == '__main__':
     #         response("EXIT", "Quitting")
     #         exit(0)
 
-    string = '  ,, "XXX" [ ] "  "     ~@,,,,  ~@ " ;TE;MP" @ ^ ~ 2 ;wfwqfwq'
-    ans = tokenize(string)
-    print(ans)
+    print(read_str('(+ 2 (* 3 4 ) )'))

@@ -1,32 +1,77 @@
 import re
-    
-class Reader:
-    def __init__(self):
-        self.Tokens = []
-        self.position = 0
 
-    def next():
-        token = Tokens[position]
-        position += 1
+mal = []
+
+class Reader:
+    def __init__(self, tokens, position):
+        self.tokens = tokens
+        self.position = position
+
+    def next(self):
+        token = self.tokens[self.position]
+        self.position += 1
         return token
 
-    def peek():
-        return Tokens[position]
+    def peek(self):
+        return self.tokens[self.position]
 
-def read_str():
+    def print(self, type):
+        print(type)
+        # print('TOKENS')
+        # print(self.tokens)
+        print('Current token: ', self.tokens[self.position])
+        
+
+              
+def read_str(string):
+    reader = Reader(tokenize(string),0)
+    print(reader.tokens)
+    return read_form(reader)
+
+
+def read_form(reader):
+    if reader.peek() == '(':
+        reader.next()
+        reader.print("rf_lpf")
+        return read_list(reader)
+    else:
+        reader.print("rf_nlpf")
+        return read_atom(reader)
+
+
+def read_list(reader):
+    itemlist = []
+    while reader.position < len(reader.tokens):
+        temp = read_form(reader)
+        reader.print("rl")
+        if temp == ')':
+            break;
+        else:
+            itemlist.append(temp)
+    print('rl_itemlist:', itemlist)
+    return itemlist
+
+
+def read_atom(reader):
+    reader.print("ra")
+    if reader.peek().isnumeric():
+        return int(reader.peek())
+    else:
+        return str(reader.peek())
+
+    assert False, "Unreachable (probably invalid input string)."
     return
 
 
 def tokenize(string):
-    x = 0
-    t = 0
     tknarray = []
     prev_string = ''
-
+    print(string, 'START')
+    
     # keep cycling until the string is consumed
     while len(string) > 0:
-        
-        # match whitespace and move string pointer   
+
+        # match whitespace and move string pointer
         wspace = re.match("[\s,]*", string)
         if wspace != None:
             string = string[len(wspace.group()):]
@@ -35,14 +80,14 @@ def tokenize(string):
         if tildeat != None:
             tknarray.append(tildeat.group())
             string = string[len(tildeat.group()):]
-            
+
         # match the semicolon starting text
         semitext = re.match(";.*", string)
         if semitext != None:
             tknarray.append(semitext.group())
             string = string[len(semitext.group()):]
 
-#        print("MID:" + string)
+        # print("MID:" + string)
         # match the double quote string, and throw error if no closing quote
         if len(string) > 0 and string[0] == '"':
             dblquote = re.match('"(?:\\.|[^\\"])*"?', string)
@@ -55,25 +100,29 @@ def tokenize(string):
                 print('Segment: <start>' + dblstring + '<end>')
                 break;
 
-#        print("MID:" + string)
-            
         # match the special characters
         specchar = re.match("[\[\]{}()'`~^@]", string)
-#        print(string)
-#        print(specchar.group())
         if specchar != None:
             tknarray.append(specchar.group())
             string = string[len(specchar.group()):]
-        
-#        print("MID:" + string)
 
+        nonspecchar = re.match('[^\s\[\]{}(\'"`,;)]*', string)
+        nscstring = nonspecchar.group()
+        if nonspecchar != None and len(nscstring) > 0:
+            tknarray.append(nonspecchar.group())
+            string = string[len(nonspecchar.group()):]
 
+        # Check if functions are not tokenizing any further,
+        # throw error if matches prior cycle
 
-        print(string)
-        if string == prev_string:
-            assert False, "Infinite loop issue..."
+        # print('MID:' + string + '\n')
 
+        if len(string) > 0:
+            if string == prev_string:
+                assert False, "Stuck processing tokens."
+        else:
+                break
         prev_string = string
-        
+
     return tknarray
 
